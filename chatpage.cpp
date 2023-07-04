@@ -1203,6 +1203,95 @@ void Chatpage::on_toolButton_4_clicked()
     createchannel(UserToken,ChannelName,"title");;
 }
 
+// sticker
+bool Chatpage::sticker(QString body) {
+    QLabel* iconLabel = new QLabel();
+    QPixmap iconPixmap;
+
+    if (body == "*UTF_laght*") {
+        iconPixmap.load(":/new/prefix1/image/5-2-face-with-tears-of-joy-emoji-png-thumb.png");
+        iconLabel->setPixmap(iconPixmap.scaled(30, 30, Qt::KeepAspectRatio));
+
+        QListWidgetItem* iconItem = new QListWidgetItem();
+        iconItem->setSizeHint(QSize(0, 40));
+        ui->listWidget->addItem(iconItem);
+        ui->listWidget->setItemWidget(iconItem, iconLabel);
+        return true;
+    }
+    else if (body == "*UTF_cry*") {
+        iconPixmap.load(":/new/prefix1/image/11-2-loudly-crying-emoji-png-thumb.png");
+        iconLabel->setPixmap(iconPixmap.scaled(30, 30, Qt::KeepAspectRatio));
+
+        QListWidgetItem* iconItem = new QListWidgetItem();
+        iconItem->setSizeHint(QSize(0, 40));
+        ui->listWidget->addItem(iconItem);
+        ui->listWidget->setItemWidget(iconItem, iconLabel);
+        return true;
+    }
+    else if (body == "*UTF_blink*") {
+        iconPixmap.load(":/new/prefix1/image/1-2-wink-emoji-png-thumb.png");
+        iconLabel->setPixmap(iconPixmap.scaled(30, 30, Qt::KeepAspectRatio));
+
+        QListWidgetItem* iconItem = new QListWidgetItem();
+        iconItem->setSizeHint(QSize(0, 40));
+        ui->listWidget->addItem(iconItem);
+        ui->listWidget->setItemWidget(iconItem, iconLabel);
+        return true;
+    }
+    else if (body == "*UTF_hearteye*") {
+        iconPixmap.load(":/new/prefix1/image/3-2-love-hearts-eyes-emoji-png-thumb.png");
+        iconLabel->setPixmap(iconPixmap.scaled(30, 30, Qt::KeepAspectRatio));
+
+        QListWidgetItem* iconItem = new QListWidgetItem();
+        iconItem->setSizeHint(QSize(0, 40));
+        ui->listWidget->addItem(iconItem);
+        ui->listWidget->setItemWidget(iconItem, iconLabel);
+        return true;
+    }
+    else if (body == "*UTF_sunglass*") {
+        iconPixmap.load(":/new/prefix1/image/4-2-smiling-face-with-sunglasses-cool-emoji-png-thumb.png");
+        iconLabel->setPixmap(iconPixmap.scaled(30, 30, Qt::KeepAspectRatio));
+
+        QListWidgetItem* iconItem = new QListWidgetItem();
+        iconItem->setSizeHint(QSize(0, 40));
+        ui->listWidget->addItem(iconItem);
+        ui->listWidget->setItemWidget(iconItem, iconLabel);
+        return true;
+    }
+    else if (body == "*UTF_angle*") {
+        iconPixmap.load(":/new/prefix1/image/6-2-angel-blushing-smile-emoji-png-thumb.png");
+        iconLabel->setPixmap(iconPixmap.scaled(30, 30, Qt::KeepAspectRatio));
+
+        QListWidgetItem* iconItem = new QListWidgetItem();
+        iconItem->setSizeHint(QSize(0, 40));
+        ui->listWidget->addItem(iconItem);
+        ui->listWidget->setItemWidget(iconItem, iconLabel);
+        return true;
+    }
+    else if (body == "*UTF_fear*") {
+        iconPixmap.load(":/new/prefix1/image/8-2-fearful-emoji-png-thumb.png");
+        iconLabel->setPixmap(iconPixmap.scaled(30, 30, Qt::KeepAspectRatio));
+
+        QListWidgetItem* iconItem = new QListWidgetItem();
+        iconItem->setSizeHint(QSize(0, 40));
+        ui->listWidget->addItem(iconItem);
+        ui->listWidget->setItemWidget(iconItem, iconLabel);
+        return true;
+    }
+    else if (body == "*UTF_fire*") {
+        iconPixmap.load(":/new/prefix1/image/58685-apple-color-symbol-fire-shape-iphone-emoji-thumb.png");
+        iconLabel->setPixmap(iconPixmap.scaled(30, 30, Qt::KeepAspectRatio));
+
+        QListWidgetItem* iconItem = new QListWidgetItem();
+        iconItem->setSizeHint(QSize(0, 40));
+        ui->listWidget->addItem(iconItem);
+        ui->listWidget->setItemWidget(iconItem, iconLabel);
+        return true;
+    }
+
+    return false;
+}
+
 // show users chat
 void Chatpage::show_users_chat(QString user)
 {
@@ -1215,38 +1304,41 @@ void Chatpage::show_users_chat(QString user)
             QString name = chats.at(i).src;
             QString date = chats.at(i).dateString;
             QString formattedText;
+            bool emoji = sticker(text);
 
-            int charCount = 0;
-            const int maxCharsPerLine = 50;
-            const int marginForLineBreak = 30;
+            if(!emoji){
+                int charCount = 0;
+                const int maxCharsPerLine = 50;
+                const int marginForLineBreak = 30;
 
-            int labelHeight = 40;  // Initialize the label height with the base height
+                int labelHeight = 40;  // Initialize the label height with the base height
 
-            QString message = name + ":\n" + text + "\n" + date;
+                QString message = name + ":\n" + text + "\n" + date;
 
-            for (const QChar& character : message) {
-                formattedText.append(character);
-                charCount++;
+                for (const QChar& character : message) {
+                    formattedText.append(character);
+                    charCount++;
 
-                if (charCount == maxCharsPerLine) {
-                    formattedText.append('\n');
-                    charCount = 0;
-                    labelHeight += marginForLineBreak; // Add margin for the line break
+                    if (charCount == maxCharsPerLine) {
+                        formattedText.append('\n');
+                        charCount = 0;
+                        labelHeight += marginForLineBreak; // Add margin for the line break
+                    }
                 }
+
+                QLabel* label = new QLabel(formattedText);
+                label->setStyleSheet("QLabel { color: white; background-color: rgb(0, 170, 255); font: 12pt 'Segoe UI'; border-radius: 5px; margin-right: 400px; }"); // Set the label's style with right margin
+                label->setAlignment(Qt::AlignLeft);
+
+                labelHeight += (text.count('\n') * marginForLineBreak); // Adjust the label height for existing line breaks
+
+                QListWidgetItem* newItem = new QListWidgetItem();
+                newItem->setSizeHint(QSize(0, labelHeight+25));
+                ui->listWidget->addItem(newItem);
+                ui->listWidget->setItemWidget(newItem, label);
+                ui->listWidget->setSpacing(10);
+                ui->listWidget->scrollToBottom();
             }
-
-            QLabel* label = new QLabel(formattedText);
-            label->setStyleSheet("QLabel { color: white; background-color: rgb(0, 170, 255); font: 12pt 'Segoe UI'; border-radius: 5px; margin-right: 400px; }"); // Set the label's style with right margin
-            label->setAlignment(Qt::AlignLeft);
-
-            labelHeight += (text.count('\n') * marginForLineBreak); // Adjust the label height for existing line breaks
-
-            QListWidgetItem* newItem = new QListWidgetItem();
-            newItem->setSizeHint(QSize(0, labelHeight+25));
-            ui->listWidget->addItem(newItem);
-            ui->listWidget->setItemWidget(newItem, label);
-            ui->listWidget->setSpacing(10);
-            ui->listWidget->scrollToBottom();
 
         }
         else if(chats.at(i).src == ui->label_2->text()){
@@ -1254,38 +1346,41 @@ void Chatpage::show_users_chat(QString user)
             QString name = chats.at(i).src;
             QString date = chats.at(i).dateString;
             QString formattedText;
+            bool emoji = sticker(text);
 
-            int charCount = 0;
-            const int maxCharsPerLine = 50;
-            const int marginForLineBreak = 30;
+            if(!emoji){
+                int charCount = 0;
+                const int maxCharsPerLine = 50;
+                const int marginForLineBreak = 30;
 
-            int labelHeight = 40;  // Initialize the label height with the base height
+                int labelHeight = 40;  // Initialize the label height with the base height
 
-            QString message = name + ":\n" + text + "\n" + date;
+                QString message = name + ":\n" + text + "\n" + date;
 
-            for (const QChar& character : message) {
-                formattedText.append(character);
-                charCount++;
+                for (const QChar& character : message) {
+                    formattedText.append(character);
+                    charCount++;
 
-                if (charCount == maxCharsPerLine) {
-                    formattedText.append('\n');
-                    charCount = 0;
-                    labelHeight += marginForLineBreak; // Add margin for the line break
+                    if (charCount == maxCharsPerLine) {
+                        formattedText.append('\n');
+                        charCount = 0;
+                        labelHeight += marginForLineBreak; // Add margin for the line break
+                    }
                 }
+
+                QLabel* label = new QLabel(formattedText);
+                label->setStyleSheet("QLabel { color: white; background-color: rgb(0, 85, 127); font: 12pt 'Segoe UI'; border-radius: 5px; margin-right: 400px; }"); // Set the label's style with right margin
+                label->setAlignment(Qt::AlignLeft);
+
+                labelHeight += (text.count('\n') * marginForLineBreak); // Adjust the label height for existing line breaks
+
+                QListWidgetItem* newItem = new QListWidgetItem();
+                newItem->setSizeHint(QSize(0, labelHeight+25));
+                ui->listWidget->addItem(newItem);
+                ui->listWidget->setItemWidget(newItem, label);
+                ui->listWidget->setSpacing(10);
+                ui->listWidget->scrollToBottom();
             }
-
-            QLabel* label = new QLabel(formattedText);
-            label->setStyleSheet("QLabel { color: white; background-color: rgb(0, 85, 127); font: 12pt 'Segoe UI'; border-radius: 5px; margin-right: 400px; }"); // Set the label's style with right margin
-            label->setAlignment(Qt::AlignLeft);
-
-            labelHeight += (text.count('\n') * marginForLineBreak); // Adjust the label height for existing line breaks
-
-            QListWidgetItem* newItem = new QListWidgetItem();
-            newItem->setSizeHint(QSize(0, labelHeight+25));
-            ui->listWidget->addItem(newItem);
-            ui->listWidget->setItemWidget(newItem, label);
-            ui->listWidget->setSpacing(10);
-            ui->listWidget->scrollToBottom();
         }
     }
 }
@@ -1301,7 +1396,98 @@ void Chatpage::show_groups_chats(QString name){
             QString name = chats.at(i).src;
             QString date = chats.at(i).dateString;
             QString formattedText;
+            bool emoji = sticker(text);
 
+            if(!emoji){
+                int charCount = 0;
+                const int maxCharsPerLine = 50;
+                const int marginForLineBreak = 30;
+
+                int labelHeight = 40;  // Initialize the label height with the base height
+
+                QString message = name + ":\n" + text + "\n" + date;
+
+                for (const QChar& character : message) {
+                    formattedText.append(character);
+                    charCount++;
+
+                    if (charCount == maxCharsPerLine) {
+                        formattedText.append('\n');
+                        charCount = 0;
+                        labelHeight += marginForLineBreak; // Add margin for the line break
+                    }
+                }
+
+                QLabel* label = new QLabel(formattedText);
+                label->setStyleSheet("QLabel { color: white; background-color: rgb(0, 170, 255); font: 12pt 'Segoe UI'; border-radius: 5px; margin-right: 400px; }"); // Set the label's style with right margin
+                label->setAlignment(Qt::AlignLeft);
+
+                labelHeight += (text.count('\n') * marginForLineBreak); // Adjust the label height for existing line breaks
+
+                QListWidgetItem* newItem = new QListWidgetItem();
+                newItem->setSizeHint(QSize(0, labelHeight+25));
+                ui->listWidget->addItem(newItem);
+                ui->listWidget->setItemWidget(newItem, label);
+                ui->listWidget->setSpacing(10);
+                ui->listWidget->scrollToBottom();
+            }
+        }
+        else{
+            QString text = chats.at(i).body;
+            QString name = chats.at(i).src;
+            QString date = chats.at(i).dateString;
+            QString formattedText;
+            bool emoji = sticker(text);
+
+            if(!emoji){
+                int charCount = 0;
+                const int maxCharsPerLine = 50;
+                const int marginForLineBreak = 30;
+
+                int labelHeight = 40;  // Initialize the label height with the base height
+
+                QString message = name + ":\n" + text + "\n" + date;
+
+                for (const QChar& character : message) {
+                    formattedText.append(character);
+                    charCount++;
+
+                    if (charCount == maxCharsPerLine) {
+                        formattedText.append('\n');
+                        charCount = 0;
+                        labelHeight += marginForLineBreak; // Add margin for the line break
+                    }
+                }
+
+                QLabel* label = new QLabel(formattedText);
+                label->setStyleSheet("QLabel { color: white; background-color: rgb(0, 85, 127); font: 12pt 'Segoe UI'; border-radius: 5px; margin-right: 400px; }"); // Set the label's style with right margin
+                label->setAlignment(Qt::AlignLeft);
+
+                labelHeight += (text.count('\n') * marginForLineBreak); // Adjust the label height for existing line breaks
+
+                QListWidgetItem* newItem = new QListWidgetItem();
+                newItem->setSizeHint(QSize(0, labelHeight+25));
+                ui->listWidget->addItem(newItem);
+                ui->listWidget->setItemWidget(newItem, label);
+                ui->listWidget->setSpacing(10);
+                ui->listWidget->scrollToBottom();
+            }
+        }
+    }
+}
+
+// show Channel chats
+void Chatpage::show_channel_chats(QString name){
+    QVector<MessageBlock> chats = getchannelchats_server_to_chat_display(UserToken,name);
+    ui->listWidget->clear();
+    for (int i = 0 ; i < chats.size(); i++) {
+        QString text = chats.at(i).body;
+        QString name = chats.at(i).src;
+        QString date = chats.at(i).dateString;
+        QString formattedText;
+        bool emoji = sticker(text);
+
+        if(!emoji){
             int charCount = 0;
             const int maxCharsPerLine = 50;
             const int marginForLineBreak = 30;
@@ -1334,88 +1520,6 @@ void Chatpage::show_groups_chats(QString name){
             ui->listWidget->setSpacing(10);
             ui->listWidget->scrollToBottom();
         }
-        else{
-            QString text = chats.at(i).body;
-            QString name = chats.at(i).src;
-            QString date = chats.at(i).dateString;
-            QString formattedText;
-
-            int charCount = 0;
-            const int maxCharsPerLine = 50;
-            const int marginForLineBreak = 30;
-
-            int labelHeight = 40;  // Initialize the label height with the base height
-
-            QString message = name + ":\n" + text + "\n" + date;
-
-            for (const QChar& character : message) {
-                formattedText.append(character);
-                charCount++;
-
-                if (charCount == maxCharsPerLine) {
-                    formattedText.append('\n');
-                    charCount = 0;
-                    labelHeight += marginForLineBreak; // Add margin for the line break
-                }
-            }
-
-            QLabel* label = new QLabel(formattedText);
-            label->setStyleSheet("QLabel { color: white; background-color: rgb(0, 85, 127); font: 12pt 'Segoe UI'; border-radius: 5px; margin-right: 400px; }"); // Set the label's style with right margin
-            label->setAlignment(Qt::AlignLeft);
-
-            labelHeight += (text.count('\n') * marginForLineBreak); // Adjust the label height for existing line breaks
-
-            QListWidgetItem* newItem = new QListWidgetItem();
-            newItem->setSizeHint(QSize(0, labelHeight+25));
-            ui->listWidget->addItem(newItem);
-            ui->listWidget->setItemWidget(newItem, label);
-            ui->listWidget->setSpacing(10);
-            ui->listWidget->scrollToBottom();
-        }
-    }
-}
-
-// show Channel chats
-void Chatpage::show_channel_chats(QString name){
-    QVector<MessageBlock> chats = getchannelchats_server_to_chat_display(UserToken,name);
-    ui->listWidget->clear();
-    for (int i = 0 ; i < chats.size(); i++) {
-        QString text = chats.at(i).body;
-        QString name = chats.at(i).src;
-        QString date = chats.at(i).dateString;
-        QString formattedText;
-
-        int charCount = 0;
-        const int maxCharsPerLine = 50;
-        const int marginForLineBreak = 30;
-
-        int labelHeight = 40;  // Initialize the label height with the base height
-
-        QString message = name + ":\n" + text + "\n" + date;
-
-        for (const QChar& character : message) {
-            formattedText.append(character);
-            charCount++;
-
-            if (charCount == maxCharsPerLine) {
-                formattedText.append('\n');
-                charCount = 0;
-                labelHeight += marginForLineBreak; // Add margin for the line break
-            }
-        }
-
-        QLabel* label = new QLabel(formattedText);
-        label->setStyleSheet("QLabel { color: white; background-color: rgb(0, 170, 255); font: 12pt 'Segoe UI'; border-radius: 5px; margin-right: 400px; }"); // Set the label's style with right margin
-        label->setAlignment(Qt::AlignLeft);
-
-        labelHeight += (text.count('\n') * marginForLineBreak); // Adjust the label height for existing line breaks
-
-        QListWidgetItem* newItem = new QListWidgetItem();
-        newItem->setSizeHint(QSize(0, labelHeight+25));
-        ui->listWidget->addItem(newItem);
-        ui->listWidget->setItemWidget(newItem, label);
-        ui->listWidget->setSpacing(10);
-        ui->listWidget->scrollToBottom();
     }
 }
 
@@ -1571,29 +1675,179 @@ void Chatpage::on_pushButton_5_clicked()
 
     if(currentindex == 0){
         QVector<QString> updatedUsers = getuserlist(UserToken);
-        ui->listWidget_2->clear();
-        for (int i = updatedUsers.size() - 1; i >= 0; --i) {
-            ui->listWidget_2->addItem(updatedUsers[i]);
+            ui->listWidget_2->clear();
+            for (int i = updatedUsers.size() - 1; i >= 0; --i) {
+                ui->listWidget_2->addItem(updatedUsers[i]);
+            }
+            show_users_chat(ui->label_2->text());
         }
-        show_users_chat(ui->label_2->text());
-    }
 
-    else if(currentindex == 1){
-        QVector<QString> groupList = getgrouplist(UserToken);
-        ui->listWidget_4->clear();
-        for(int i = groupList.size() -1 ; i >= 0; --i){
-            ui->listWidget_4->addItem(groupList[i]);
+        else if(currentindex == 1){
+            QVector<QString> groupList = getgrouplist(UserToken);
+            ui->listWidget_4->clear();
+            for(int i = groupList.size() -1 ; i >= 0; --i){
+                ui->listWidget_4->addItem(groupList[i]);
+            }
+            show_groups_chats(ui->label_2->text());
         }
-        show_groups_chats(ui->label_2->text());
-    }
 
-    else if(currentindex == 2){
-        QVector<QString> channelList = getchannellist(UserToken);
-        ui->listWidget_3->clear();
-        for(int i = channelList.size() -1 ; i >= 0 ; --i){
-            ui->listWidget_3->addItem(channelList[i]);
+        else if(currentindex == 2){
+            QVector<QString> channelList = getchannellist(UserToken);
+            ui->listWidget_3->clear();
+            for(int i = channelList.size() -1 ; i >= 0 ; --i){
+                ui->listWidget_3->addItem(channelList[i]);
+            }
+            show_channel_chats(ui->label_2->text());
         }
-        show_channel_chats(ui->label_2->text());
-    }
     }
 }
+
+void Chatpage::on_listWidget_5_itemClicked(QListWidgetItem *item)
+{
+    int current = ui->listWidget_5->row(item);
+    QString name = ui->label_2->text();
+
+    if(current == 0){
+        int currentIndex = ui->tabWidget->currentIndex();
+
+        if (currentIndex == 0) {
+            sendmessageuser_chat_to_server(UserToken, name, "*UTF_laght*");
+            return;
+
+        } else if (currentIndex == 1) {
+            sendmessagegroup_chat_to_server(UserToken,name,"*UTF_laght*");
+            return;
+
+        } else if (currentIndex == 2) {
+            sendmessagechannel_chat_to_server(UserToken,name,"*UTF_laght*");
+            return;
+        }
+    }
+
+    else if(current == 1){
+        int currentIndex = ui->tabWidget->currentIndex();
+
+        if (currentIndex == 0) {
+            sendmessageuser_chat_to_server(UserToken, name, "*UTF_cry*");
+            return;
+
+        } else if (currentIndex == 1) {
+            sendmessagegroup_chat_to_server(UserToken,name,"*UTF_cry*");
+            return;
+
+        } else if (currentIndex == 2) {
+            sendmessagechannel_chat_to_server(UserToken,name,"*UTF_cry*");
+            return;
+        }
+    }
+
+    else if(current == 2){
+        int currentIndex = ui->tabWidget->currentIndex();
+
+
+        if (currentIndex == 0) {
+            sendmessageuser_chat_to_server(UserToken, name, "*UTF_blink*");
+            return;
+
+        } else if (currentIndex == 1) {
+            sendmessagegroup_chat_to_server(UserToken,name,"*UTF_blink*");
+            return;
+
+        } else if (currentIndex == 2) {
+            sendmessagechannel_chat_to_server(UserToken,name,"*UTF_blink*");
+            return;
+        }
+    }
+
+    else if(current == 3){
+        int currentIndex = ui->tabWidget->currentIndex();
+
+        if (currentIndex == 0) {
+            sendmessageuser_chat_to_server(UserToken, name, "*UTF_hearteye*");
+            return;
+
+        } else if (currentIndex == 1) {
+            sendmessagegroup_chat_to_server(UserToken,name,"*UTF_hearteye*");
+            return;
+
+        } else if (currentIndex == 2) {
+            sendmessagechannel_chat_to_server(UserToken,name,"*UTF_hearteye*");
+            return;
+
+        }
+    }
+
+    else if(current == 4){
+        int currentIndex = ui->tabWidget->currentIndex();
+
+        if (currentIndex == 0) {
+            sendmessageuser_chat_to_server(UserToken, name, "*UTF_sunglass*");
+            return;
+
+
+        } else if (currentIndex == 1) {
+            sendmessagegroup_chat_to_server(UserToken,name,"*UTF_sunglass*");
+            return;
+
+
+        } else if (currentIndex == 2) {
+            sendmessagechannel_chat_to_server(UserToken,name,"*UTF_sunglass*");
+            return;
+
+        }
+    }
+
+    else if(current == 5){
+        int currentIndex = ui->tabWidget->currentIndex();
+
+        if (currentIndex == 0) {
+            sendmessageuser_chat_to_server(UserToken, name,"*UTF_angle*");
+            return;
+
+        } else if (currentIndex == 1) {
+            sendmessagegroup_chat_to_server(UserToken,name,"*UTF_angle*");
+            return;
+
+        } else if (currentIndex == 2) {
+            sendmessagechannel_chat_to_server(UserToken,name,"*UTF_angle*");
+            return;
+        }
+    }
+
+    else if(current == 6){
+        int currentIndex = ui->tabWidget->currentIndex();
+
+        if (currentIndex == 0) {
+            sendmessageuser_chat_to_server(UserToken, name, "*UTF_fear*");
+            return;
+
+        } else if (currentIndex == 1) {
+            sendmessagegroup_chat_to_server(UserToken,name,"*UTF_fear*");
+            return;
+
+        } else if (currentIndex == 2) {
+            sendmessagechannel_chat_to_server(UserToken,name,"*UTF_fear*");
+            return;
+        }
+    }
+
+    else if(current == 7){
+        int currentIndex = ui->tabWidget->currentIndex();
+
+        if (currentIndex == 0) {
+            sendmessageuser_chat_to_server(UserToken, name, "*UTF_fire*");
+            return;
+
+        } else if (currentIndex == 1) {
+            sendmessagegroup_chat_to_server(UserToken,name,"*UTF_fire*");
+            return;
+
+        } else if (currentIndex == 2) {
+            sendmessagechannel_chat_to_server(UserToken,name,"*UTF_fire*");
+            return;
+
+        }
+    }
+}
+
+

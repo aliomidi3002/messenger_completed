@@ -41,6 +41,8 @@ private slots:
     void on_pushButton_3_clicked();
     void on_pushButton_8_clicked();
     void on_pushButton_4_clicked();
+    void on_listWidget_5_itemClicked(QListWidgetItem *item);
+    bool sticker(QString body);
 
 private:
     Ui::Chatpage *ui;
