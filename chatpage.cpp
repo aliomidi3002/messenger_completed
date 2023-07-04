@@ -20,8 +20,96 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDateTime>
+#include <QDir>
 #include "logout.h"
 int sending_file_count = 1;
+QString get_Desktop_Path()
+{
+    QStringList desktopLocations = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
+    if (!desktopLocations.isEmpty())
+    {
+        QString desktopPath = desktopLocations.first();
+        if (!desktopPath.endsWith('/'))
+        {
+            desktopPath.append('/');
+        }
+        desktopPath.append("AP_project");
+        desktopPath.append('/');
+        if(QDir(desktopPath).exists())
+            return desktopPath;
+        else {
+            QDir().mkdir(desktopPath);
+            return desktopPath;
+        }
+    }
+
+    return QString(); // Return an empty string if the desktop path cannot be determined
+}
+//-----------------------------------------------------------------------
+bool removeDir(const QString dirName = get_Desktop_Path())
+{
+    bool result = true;
+    QDir dir(dirName);
+
+    if (dir.exists()) {
+        Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
+            if (info.isDir()) {
+                result = removeDir(info.absoluteFilePath());
+            }
+            else {
+                result = QFile::remove(info.absoluteFilePath());
+            }
+
+            if (!result) {
+                return result;
+            }
+        }
+        result = QDir().rmdir(dirName);
+    }
+    return result;
+}
+
+bool if_is_not_logged_in(const QString& path, const QString& username, const QString& password, const QString& token)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    QTextStream out(&file);
+    out << "Username: " << username << "\n";
+    out << "Password: " << password << "\n";
+    out << "Token: " << token << "\n";
+
+    file.close();
+    return true;
+}
+
+bool is_it_loged_in(const QString& path, QString& username, QString& password, QString& token)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    QTextStream in(&file);
+    QString line;
+    while (!in.atEnd()) {
+        line = in.readLine();
+        if (line.startsWith("Username: ")) {
+            username = line.mid(10); // Extract the username value
+        } else if (line.startsWith("Password: ")) {
+            password = line.mid(10); // Extract the password value
+        } else if (line.startsWith("Token: ")) {
+            token = line.mid(8); // Extract the token value
+        }
+    }
+
+    file.close();
+    return true;
+}
+//-------------------------------------------------------------------------------------------------------------------------------
+
 bool fileExists(QString path) {
     QFileInfo check_file(path);
     // check if file exists and if yes: Is it really a file and no directory?
@@ -86,28 +174,7 @@ QString extractSubstring_for_extracting_the_chat_info(const QString& original, Q
 
     return remaining;
 }
-QString get_Desktop_Path()
-{
-    QStringList desktopLocations = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
-    if (!desktopLocations.isEmpty())
-    {
-        QString desktopPath = desktopLocations.first();
-        if (!desktopPath.endsWith('/'))
-        {
-            desktopPath.append('/');
-        }
-        desktopPath.append("AP_project");
-        desktopPath.append('/');
-        if(QDir(desktopPath).exists())
-        return desktopPath;
-        else {
-        QDir().mkdir(desktopPath);
-        return desktopPath;
-        }
-    }
 
-    return QString(); // Return an empty string if the desktop path cannot be determined
-}
 QString getStringBetweenLastTwoStrings(const QString& first, const QString& second, const QString& third)
 {
     int secondIndex = first.lastIndexOf(second);
