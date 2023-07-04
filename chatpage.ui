@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Chatpage</class>
+ <widget class="QDialog" name="Chatpage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{
+	background-image: url(:/new/prefix1/image/Qvqz7n.jpg);
+}
+
+QPushButton{
+border-radius:15px;
+	background-color: rgb(0, 170, 255);
+}
+
+QPushButton:hover{
+background-color: rgb(0, 0, 127);
+}
+
+QFrame{
+border-bottom: 2x solid #717072;
+background-color: rgba(0,0,0,0.8);
+}
+
+</string>
+  </property>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="geometry">
+    <rect>
+     <x>1110</x>
+     <y>510</y>
+     <width>31</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton{
+background-color:  rgb(255, 255, 0);
+}
+
+QPushButton:hover{
+background-color: rgb(170, 170, 0);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/new/prefix1/image/1500458.png</normaloff>:/new/prefix1/image/1500458.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>25</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_4">
+   <property name="geometry">
+    <rect>
+     <x>1150</x>
+     <y>510</y>
+     <width>31</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton{
+background-color: rgb(170, 0, 255);
+}
+
+QPushButton:hover{
+background-color: rgb(85, 0, 127);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/new/prefix1/image/clip-icon.png</normaloff>:/new/prefix1/image/clip-icon.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>25</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="toolButton_2">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>10</y>
+     <width>51</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius:20px;
+background-color: rgb(0, 170, 255);
+border: 2px solid #717072;
+
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/new/prefix1/image/Sample_User_Icon.png</normaloff>:/new/prefix1/image/Sample_User_Icon.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>40</width>
+     <height>40</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>10</y>
+     <width>201</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius:20px;
+background-color:rgba(0,0,0,0.5);
+border: 2px solid #717072;;
+font: 700 12pt &quot;Segoe UI&quot;;
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2">
+   <property name="geometry">
+    <rect>
+     <x>1070</x>
+     <y>510</y>
+     <width>31</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">hover{ background-color: rgb(0, 170, 255);}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/new/prefix1/image/send_circle_icon_136236.png</normaloff>:/new/prefix1/image/send_circle_icon_136236.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>30</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>480</y>
+     <width>701</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color:white;
+border-radius:20px;
+border: 2px solid #717072;;
+background-color:rgba(0,0,0,0.6)
+</string>
+   </property>
+   <property name="placeholderText">
+    <string>Write a message...</string>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="listWidget">
+   <property name="geometry">
+    <rect>
+     <x>345</x>
+     <y>81</y>
+     <width>831</width>
+     <height>381</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QListWidget{
+	font: 10pt &quot;Segoe UI&quot;;
+background-color: rgba(0,0,0,0.6);
+border-radius:15px;
+}
+</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>1140</x>
+     <y>20</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton{
+	background-color: rgb(170, 0, 0);
+}
+
+QPushButton:hover{
+background-color: rgb(255, 0, 0);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/new/prefix1/image/7043665.png</normaloff>:/new/prefix1/image/7043665.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>25</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_5">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>20</y>
+     <width>41</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgba(0,0,0,0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>60</y>
+     <width>341</width>
+     <height>521</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::TabFocus</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(0, 85, 127);</string>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <property name="tabBarAutoHide">
+    <bool>false</bool>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Chat</string>
+    </attribute>
+    <widget class="QToolButton" name="toolButton_5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton{
+border-radius:30px;
+border: 2px solid #717072;;
+	background-color: rgb(0, 170, 255);
+border-radius:20px;
+}
+
+QToolButton:hover{
+background-color: rgb(0, 0, 127);
+}
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/new/prefix1/image/1200px-New_user_icon-01.svg.png</normaloff>:/new/prefix1/image/1200px-New_user_icon-01.svg.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="listWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>311</width>
+       <height>411</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QListWidget {
+background-color: rgba(0,0,0,0.6);
+border-radius:15px;
+font: 700 18pt &quot;Segoe UI&quot;;
+
+}
+QListWidget::item {
+border-radius:20px;
+background-color:rgba(0,0,0,0.5);
+border: 2px solid #717072;
+color:white;
+}
+
+QListWidget::item:selected {
+background-color: rgb(0, 85, 127);
+}</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>17</y>
+       <width>261</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(0,0,0,0.6);
+border-radius:15px;</string>
+     </property>
+     <property name="placeholderText">
+      <string>Find Users...</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Group</string>
+    </attribute>
+    <widget class="QToolButton" name="toolButton_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton{
+border-radius:30px;
+border: 2px solid #717072;;
+	background-color: rgb(0, 170, 255);
+border-radius:20px;
+}
+
+QToolButton:hover{
+background-color: rgb(0, 0, 127);
+}
+
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/new/prefix1/image/img_76872.png</normaloff>:/new/prefix1/image/img_76872.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="listWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>311</width>
+       <height>411</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(0,0,0,0.6);
+border-radius:15px;
+font: 700 18pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_3">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>17</y>
+       <width>211</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(0,0,0,0.6);
+border-radius:15px;</string>
+     </property>
+     <property name="placeholderText">
+      <string>Create Or Find Group...</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_7">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>10</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton{
+border-radius:30px;
+border: 2px solid #717072;;
+	background-color: rgb(0, 170, 255);
+border-radius:20px;
+}
+
+QPushButton:hover{
+background-color: rgb(0, 0, 127);
+}
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/new/prefix1/image/search-icon.png</normaloff>:/new/prefix1/image/search-icon.png</iconset>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Channel</string>
+    </attribute>
+    <widget class="QToolButton" name="toolButton_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton{
+border-radius:30px;
+border: 2px solid #717072;;
+	background-color: rgb(0, 170, 255);
+border-radius:20px;
+}
+
+QToolButton:hover{
+background-color: rgb(0, 0, 127);
+}
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/new/prefix1/image/img_12531.png</normaloff>:/new/prefix1/image/img_12531.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="listWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>311</width>
+       <height>411</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(0,0,0,0.6);
+border-radius:15px;
+font: 700 18pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_2">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>17</y>
+       <width>211</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(0,0,0,0.6);
+border-radius:15px;</string>
+     </property>
+     <property name="placeholderText">
+      <string>Create Or Find Channel....</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_6">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>10</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton{
+border-radius:30px;
+border: 2px solid #717072;;
+	background-color: rgb(0, 170, 255);
+border-radius:20px;
+}
+
+QPushButton:hover{
+background-color: rgb(0, 0, 127);
+}
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/new/prefix1/image/search-icon.png</normaloff>:/new/prefix1/image/search-icon.png</iconset>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>10</y>
+     <width>251</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius:20px;
+background-color:rgba(0,0,0,0.5);
+border: 2px solid #717072;
+font: 700 12pt &quot;Segoe UI&quot;;
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="toolButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>41</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QToolButton{
+border-radius:30px;
+border: 2px solid #717072;;
+	background-color: rgb(0, 170, 255);
+border-radius:20px;
+}
+
+QToolButton:hover{
+background-color: rgb(0, 0, 127);
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/new/prefix1/image/Sample_User_Icon.png</normaloff>:/new/prefix1/image/Sample_User_Icon.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>50</width>
+     <height>50</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="listWidget_5">
+   <property name="geometry">
+    <rect>
+     <x>1100</x>
+     <y>230</y>
+     <width>81</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QListWidget {
+background-color: rgba(0,0,0,0.6);
+border-radius:15px;
+font: 700 18pt &quot;Segoe UI&quot;;
+
+}
+QListWidget::item {
+border-radius:20px;
+background-color:rgba(0,0,0,0.5);
+color:white;
+}
+
+QListWidget::item:selected {
+border: 2px solid #717072;
+}</string>
+   </property>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+    <property name="icon">
+     <iconset resource="images.qrc">
+      <normaloff>:/new/prefix1/image/5-2-face-with-tears-of-joy-emoji-png-thumb.png</normaloff>:/new/prefix1/image/5-2-face-with-tears-of-joy-emoji-png-thumb.png</iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="images.qrc">
+      <normaloff>:/new/prefix1/image/11-2-loudly-crying-emoji-png-thumb.png</normaloff>:/new/prefix1/image/11-2-loudly-crying-emoji-png-thumb.png</iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="images.qrc">
+      <normaloff>:/new/prefix1/image/1-2-wink-emoji-png-thumb.png</normaloff>:/new/prefix1/image/1-2-wink-emoji-png-thumb.png</iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="images.qrc">
+      <normaloff>:/new/prefix1/image/3-2-love-hearts-eyes-emoji-png-thumb.png</normaloff>:/new/prefix1/image/3-2-love-hearts-eyes-emoji-png-thumb.png</iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="images.qrc">
+      <normaloff>:/new/prefix1/image/4-2-smiling-face-with-sunglasses-cool-emoji-png-thumb.png</normaloff>:/new/prefix1/image/4-2-smiling-face-with-sunglasses-cool-emoji-png-thumb.png</iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="images.qrc">
+      <normaloff>:/new/prefix1/image/6-2-angel-blushing-smile-emoji-png-thumb.png</normaloff>:/new/prefix1/image/6-2-angel-blushing-smile-emoji-png-thumb.png</iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="images.qrc">
+      <normaloff>:/new/prefix1/image/8-2-fearful-emoji-png-thumb.png</normaloff>:/new/prefix1/image/8-2-fearful-emoji-png-thumb.png</iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="images.qrc">
+      <normaloff>:/new/prefix1/image/58685-apple-color-symbol-fire-shape-iphone-emoji-thumb.png</normaloff>:/new/prefix1/image/58685-apple-color-symbol-fire-shape-iphone-emoji-thumb.png</iconset>
+    </property>
+   </item>
+  </widget>
+  <widget class="QPushButton" name="pushButton_8">
+   <property name="geometry">
+    <rect>
+     <x>1100</x>
+     <y>20</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton{
+background-color: rgb(135, 45, 0);
+}
+
+QPushButton:hover{
+	background-color: rgb(255, 85, 0);
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/new/prefix1/image/126467.png</normaloff>:/new/prefix1/image/126467.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>25</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

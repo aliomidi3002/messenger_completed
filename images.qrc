@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>image/436-4363443_view-user-icon-png-font-awesome-user-circle.png</file>
+        <file>image/93634.png</file>
+        <file>image/2889676.png</file>
+        <file>image/4779893-200.png</file>
+        <file>image/emoji-smile-icon-symbol-on-yellow-background-smiley-face-cartoon-character-wallpaper-vector.jpg</file>
+        <file>image/iStock-697020460-scaled.jpg</file>
+        <file>image/Sample_User_Icon.png</file>
+        <file>image/search-icon.png</file>
+        <file>image/hd-settings-black-line-icon-png-11640542802zybarymqkq.png</file>
+        <file>image/free-settings-icon-3110-thumb.png</file>
+        <file>image/76716.png</file>
+        <file>image/1500458.png</file>
+        <file>image/free-file-icon-1453-thumb.png</file>
+        <file>image/clip-icon.png</file>
+        <file>image/send_circle_icon_136236.png</file>
+        <file>image/3566345.png</file>
+        <file>image/126467.png</file>
+        <file>image/img_76872.png</file>
+        <file>image/1200px-New_user_icon-01.svg.png</file>
+        <file>image/img_12531.png</file>
+        <file>image/7043665.png</file>
+        <file>image/user-icon-2048x2048-ihoxz4vq.png</file>
+        <file>image/R14011_product.jpg</file>
+        <file>image/hd-aesthetic-cloud-wallpaper-whatspaper-1.jpg</file>
+        <file>image/blush-clouds-daydream.jpg</file>
+        <file>image/165869.jpg</file>
+        <file>image/Qvqz7n.jpg</file>
+        <file>image/1-2-wink-emoji-png-thumb.png</file>
+        <file>image/3-2-love-hearts-eyes-emoji-png-thumb.png</file>
+        <file>image/4-2-smiling-face-with-sunglasses-cool-emoji-png-thumb.png</file>
+        <file>image/5-2-face-with-tears-of-joy-emoji-png-thumb.png</file>
+        <file>image/6-2-angel-blushing-smile-emoji-png-thumb.png</file>
+        <file>image/8-2-fearful-emoji-png-thumb.png</file>
+        <file>image/11-2-loudly-crying-emoji-png-thumb.png</file>
+        <file>image/58685-apple-color-symbol-fire-shape-iphone-emoji-thumb.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>image/3566345.png</file>
+    </qresource>
+</RCC>
