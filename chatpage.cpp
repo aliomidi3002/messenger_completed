@@ -645,6 +645,22 @@ void processMessageBlocks(QVector<MessageBlock>& blocks ,QString name) {
     }
     return ;
 }
+void deleteAfterFirstStart(QVector<MessageBlock>& messageBlocks) {
+    bool foundStart = false;
+    auto startIt = messageBlocks.begin();
+
+    for (auto it = messageBlocks.begin(); it != messageBlocks.end(); ++it) {
+        if (it->body == "**start**") {
+            if (foundStart) {
+                messageBlocks.erase(it, messageBlocks.end());
+                break;
+            } else {
+                foundStart = true;
+                startIt = it;
+            }
+        }
+    }
+}
 
 void processMessageBlocks2(QVector<MessageBlock>& blocks,QString path_of_the_previous ) {
     int startIndex = -1;
@@ -687,14 +703,42 @@ void processMessageBlocks2(QVector<MessageBlock>& blocks,QString path_of_the_pre
     return ;
 }
 
-int countStartOccurrences(const QVector<MessageBlock>& blocks) {
-    int count = 0;
-    for (const auto& block : blocks) {
-        if (block.body == "**start**") {
-            count++;
+
+bool hasEqualStartAndEnd(const QVector<MessageBlock>& messageBlocks) {
+    int startCount = 0;
+    int endCount = 0;
+
+    for (const auto& message : messageBlocks) {
+        if (message.body == "**start**") {
+            startCount++;
+        } else if (message.body == "**end**") {
+            endCount++;
         }
     }
-    return count;
+
+    return startCount == endCount;
+}
+int Start_count_exist(const QVector<MessageBlock>& messageBlocks){
+    int startCount = 0;
+
+    for (const auto& message : messageBlocks) {
+        if (message.body.contains("*start*")) {
+            startCount++;
+        }
+    }
+
+    return startCount;
+}
+int end_count_exist(const QVector<MessageBlock>& messageBlocks){
+    int startCount = 0;
+
+    for (const auto& message : messageBlocks) {
+        if (message.body.contains("*end*")) {
+            startCount++;
+        }
+    }
+
+    return startCount;
 }
 int pic_user_display_count=0;
 QVector<QString> night;
@@ -786,12 +830,18 @@ QVector<MessageBlock> getgroupchats_server_to_chat_display(QString token, QStrin
         qDebug() << "Invalid JSON response: Failed to parse";
     }
     QString temp;
-    int a = countStartOccurrences(messageBlocks);
-    if(a!=pic_user_display_count){
+    int a = Start_count_exist(messageBlocks);
+    int b = end_count_exist(messageBlocks);
+    if(a==b){
+        qDebug()<<a<<"     "<<a;
         for(int i=0;i<a;i++){
-            temp = QString::number(i) + "_groupr_" + dst;
+            temp = QString::number(i) + "_group_" + dst;
             processMessageBlocks(messageBlocks,temp);
         }
+
+    }
+    else{
+        pic_user_display_count = -20;
     }
     return messageBlocks;
 }
@@ -882,12 +932,18 @@ QVector<MessageBlock> getuserchats_server_to_chat_display(QString token, QString
         qDebug() << "Invalid JSON response: Failed to parse";
     }
     QString temp;
-    int a = countStartOccurrences(messageBlocks);
-    if(a!=pic_user_display_count){
+    int a = Start_count_exist(messageBlocks);
+    int b = end_count_exist(messageBlocks);
+    if(a==b){
+        qDebug()<<a<<"     "<<a;
         for(int i=0;i<a;i++){
             temp = QString::number(i) + "_user_" + dst;
-    processMessageBlocks(messageBlocks,temp);
+            processMessageBlocks(messageBlocks,temp);
+        }
+
     }
+    else{
+        pic_user_display_count = -20;
     }
     return messageBlocks;
 }
@@ -979,13 +1035,20 @@ QVector<MessageBlock> getchannelchats_server_to_chat_display(QString token, QStr
         qDebug() << "Invalid JSON response: Failed to parse";
     }
     QString temp;
-    int a = countStartOccurrences(messageBlocks);
-    if(a!=pic_user_display_count){
+    int a = Start_count_exist(messageBlocks);
+    int b = end_count_exist(messageBlocks);
+    if(a==b){
+        qDebug()<<a<<"     "<<a;
         for(int i=0;i<a;i++){
             temp = QString::number(i) + "_channel_" + dst;
             processMessageBlocks(messageBlocks,temp);
         }
+
     }
+    else{
+        pic_user_display_count = -20;
+    }
+
     return messageBlocks;
 }
 QString signup(QString user,QString pass) {
@@ -1630,9 +1693,11 @@ void Chatpage::on_pushButton_8_clicked()
 //}
 void Chatpage::on_pushButton_4_clicked()
 {
+
     sending_file_count = 0;
     QString dis = ui->label_2->text();
     QString path =  QFileDialog::getOpenFileName(this, "Open File", QDir::homePath());   //"C:/Users/Im'z/Desktop/New folder (8)/download/jaja1.jpg";
+    if(path != ""){
     QString format = getFileFormat(path);
     qDebug()<<format;
     QString converted_string = convert_file_To_String(path);
@@ -1661,6 +1726,7 @@ void Chatpage::on_pushButton_4_clicked()
 
     QString decode = decodeString(coded);
     qDebug()<<decode;
+}
     sending_file_count=1;
     //QString final_path = saveFileToDesktop(decode,format);
     //qDebug()<<final_path;
@@ -1669,6 +1735,7 @@ void Chatpage::on_pushButton_4_clicked()
 
 void Chatpage::on_pushButton_5_clicked()
 {
+    if(pic_user_display_count >= 0){
     if(sending_file_count==1){
     int currentindex =  ui->tabWidget->currentIndex();
 
@@ -1699,6 +1766,10 @@ void Chatpage::on_pushButton_5_clicked()
             }
             show_channel_chats(ui->label_2->text());
         }
+    }
+    }
+    else {
+    pic_user_display_count++;
     }
 }
 
