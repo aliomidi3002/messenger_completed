@@ -45,6 +45,30 @@ QString get_Desktop_Path()
 
     return QString(); // Return an empty string if the desktop path cannot be determined
 }
+QString get_login_inf_Path()
+{
+    QStringList desktopLocations = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
+    if (!desktopLocations.isEmpty())
+    {
+        QString desktopPath = desktopLocations.first();
+        if (!desktopPath.endsWith('/'))
+        {
+            desktopPath.append('/');
+        }
+        desktopPath.append("AP_project");
+        desktopPath.append('/');
+        desktopPath.append("user_info/");
+        if(QDir(desktopPath).exists())
+            return desktopPath;
+        else {
+            QDir().mkdir(desktopPath);
+            return desktopPath;
+        }
+    }
+
+    return QString(); // Return an empty string if the desktop path cannot be determined
+}
+
 //-----------------------------------------------------------------------
 bool removeDir(const QString dirName = get_Desktop_Path())
 {
@@ -69,9 +93,18 @@ bool removeDir(const QString dirName = get_Desktop_Path())
     return result;
 }
 
-bool if_is_not_logged_in(const QString& path, const QString& username, const QString& password, const QString& token)
+bool if_is_not_logged_in( const QString& username, const QString& password, const QString& token)
 {
+    QString path = get_login_inf_Path();
+    path.append("login_info.txt/");
     QFile file(path);
+    if (!file.exists()) {
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            return false; // Failed to create or open the file
+        }
+        file.close();
+    }
+
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return false; // Failed to open the file
     }
@@ -85,8 +118,10 @@ bool if_is_not_logged_in(const QString& path, const QString& username, const QSt
     return true;
 }
 
-bool is_it_loged_in(const QString& path, QString& username, QString& password, QString& token)
+bool is_it_loged_in( QString& username, QString& password, QString& token)
 {
+    QString path = get_Desktop_Path();
+    path.append("user_info/login_info.txt/");
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return false; // Failed to open the file
