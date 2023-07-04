@@ -21,8 +21,84 @@
 #include <QTextStream>
 #include <QDateTime>
 #include <QDir>
-#include "logout.h"
+#include <QMessageBox>
+
+
+bool checkInternetConnection()
+{
+    QNetworkAccessManager manager;
+    QNetworkRequest request(QUrl("http://www.google.com"));
+    QNetworkReply *reply = manager.get(request);
+
+    QEventLoop eventLoop;
+    QObject::connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
+    eventLoop.exec();
+
+    bool isConnected = false;
+    if (reply->error() == QNetworkReply::NoError) {
+        isConnected = true;
+    }
+
+    reply->deleteLater();
+    return isConnected;
+}
+
+
 int sending_file_count = 1;
+
+struct MessageBlock {
+    QString src;
+    QString dst;
+    QString body;
+    QDateTime dateTime; // Updated to use QDateTime for date and time
+    QString dateString; // Added QString member for date
+};
+
+QString response_code(QString Server_Response);
+
+QString logout(QString user,QString pass) {
+    QString url1= "http://api.barafardayebehtar.ml:8080/logout?username=";
+    QString url2= "&password=";
+
+    url1=url1+user+url2+pass;
+    QUrl url(url1);
+    /*
+    QUrl url2("&password=");
+    url = url.resolved(user1);
+    url = url.resolved(url2);
+    url = url.resolved(pass1);*/
+    // Create a QNetworkAccessManager object
+    QNetworkAccessManager manager;
+
+    // Create a QNetworkRequest object and set the URL
+    QNetworkRequest request;
+    request.setUrl(url);
+
+    // Send the GET request
+    QNetworkReply* reply = manager.get(request);
+
+    // Wait for the request to finish
+    QEventLoop loop;
+    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    QString response;
+    if (reply->error() == QNetworkReply::NoError) {
+        // Reading the response data
+        QByteArray responseData = reply->readAll();
+        response = QString(responseData);
+    } else {
+        // Handle error cases
+        qDebug() << "Error:" << reply->errorString();
+    }
+
+    // Clean up
+    reply->deleteLater();
+    QString response_code_login_server = response_code(response);
+    return response_code_login_server;
+
+}
+
 QString get_Desktop_Path()
 {
     QStringList desktopLocations = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
@@ -45,29 +121,304 @@ QString get_Desktop_Path()
 
     return QString(); // Return an empty string if the desktop path cannot be determined
 }
-QString get_login_inf_Path()
+
+QString get_login_inf_Path();
+
+bool store_user_list_ofline( const QVector<QString>& strings)
 {
-    QStringList desktopLocations = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
-    if (!desktopLocations.isEmpty())
-    {
-        QString desktopPath = desktopLocations.first();
-        if (!desktopPath.endsWith('/'))
-        {
-            desktopPath.append('/');
-        }
-        desktopPath.append("AP_project");
-        desktopPath.append('/');
-        desktopPath.append("user_info/");
-        if(QDir(desktopPath).exists())
-            return desktopPath;
-        else {
-            QDir().mkdir(desktopPath);
-            return desktopPath;
+    QString path = get_login_inf_Path();
+    path.append("user_list.txt");
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    QTextStream out(&file);
+    for (int i = 0; i < strings.size(); ++i) {
+        out << strings.at(i) << "\n";
+    }
+
+    file.close();
+    return true;
+}
+
+bool store_group_list_ofline( const QVector<QString>& strings)
+{
+    QString path = get_login_inf_Path();
+    path.append("group_list.txt");
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    QTextStream out(&file);
+    for (int i = 0; i < strings.size(); ++i) {
+        out << strings.at(i) << "\n";
+    }
+
+    file.close();
+    return true;
+}
+
+bool store_channel_list_ofline( const QVector<QString>& strings)
+{
+    QString path = get_login_inf_Path();
+    path.append("channel_list.txt");
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    QTextStream out(&file);
+    for (int i = 0; i < strings.size(); ++i) {
+        out << strings.at(i) << "\n";
+    }
+
+    file.close();
+    return true;
+}
+
+QVector<QString> get_user_list_ofline()
+{
+    QString path = get_login_inf_Path();
+    path.append("user_list.txt");
+    QVector<QString> strings;
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return strings; // Return an empty QVector if the file fails to open
+    }
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        strings.append(line);
+    }
+
+    file.close();
+    return strings;
+}
+QVector<QString> get_group_list_ofline()
+{
+    QString path = get_login_inf_Path();
+    path.append("group_list.txt");
+    QVector<QString> strings;
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return strings; // Return an empty QVector if the file fails to open
+    }
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        strings.append(line);
+    }
+
+    file.close();
+    return strings;
+}
+QVector<QString> get_channel_list_ofline()
+{
+    QString path = get_login_inf_Path();
+    path.append("channel_list.txt");
+    QVector<QString> strings;
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return strings; // Return an empty QVector if the file fails to open
+    }
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        strings.append(line);
+    }
+
+    file.close();
+    return strings;
+}
+QVector<MessageBlock> readMessageBlocks_user(QString dst)
+{
+    QString path = get_login_inf_Path();
+    path.append(dst);
+    path.append("_chat_user.txt");
+    QVector<MessageBlock> messageBlocks;
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return messageBlocks; // Return an empty QVector if the file fails to open
+    }
+
+    QTextStream in(&file);
+    MessageBlock block;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (line.startsWith("Source: ")) {
+            block.src = line.mid(8);
+        } else if (line.startsWith("Destination: ")) {
+            block.dst = line.mid(13);
+        } else if (line.startsWith("Body: ")) {
+            block.body = line.mid(6);
+        } else if (line.startsWith("DateTime: ")) {
+            block.dateTime = QDateTime::fromString(line.mid(10));
+        } else if (line.startsWith("DateString: ")) {
+            block.dateString = line.mid(13);
+        } else if (line.startsWith("-----")) {
+            messageBlocks.append(block);
+            block = MessageBlock();
         }
     }
 
-    return QString(); // Return an empty string if the desktop path cannot be determined
+    file.close();
+    return messageBlocks;
 }
+QVector<MessageBlock> readMessageBlocks_group(QString dst)
+{
+    QString path = get_login_inf_Path();
+    path.append(dst);
+    path.append("_chat_group.txt");
+    QVector<MessageBlock> messageBlocks;
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return messageBlocks; // Return an empty QVector if the file fails to open
+    }
+
+    QTextStream in(&file);
+    MessageBlock block;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (line.startsWith("Source: ")) {
+            block.src = line.mid(8);
+        } else if (line.startsWith("Destination: ")) {
+            block.dst = line.mid(13);
+        } else if (line.startsWith("Body: ")) {
+            block.body = line.mid(6);
+        } else if (line.startsWith("DateTime: ")) {
+            block.dateTime = QDateTime::fromString(line.mid(10));
+        } else if (line.startsWith("DateString: ")) {
+            block.dateString = line.mid(13);
+        } else if (line.startsWith("-----")) {
+            messageBlocks.append(block);
+            block = MessageBlock();
+        }
+    }
+
+    file.close();
+    return messageBlocks;
+}
+QVector<MessageBlock> readMessageBlocks_channel(QString dst)
+{
+    QString path = get_login_inf_Path();
+    path.append(dst);
+    path.append("_chat_channel.txt");
+    QVector<MessageBlock> messageBlocks;
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return messageBlocks; // Return an empty QVector if the file fails to open
+    }
+
+    QTextStream in(&file);
+    MessageBlock block;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (line.startsWith("Source: ")) {
+            block.src = line.mid(8);
+        } else if (line.startsWith("Destination: ")) {
+            block.dst = line.mid(13);
+        } else if (line.startsWith("Body: ")) {
+            block.body = line.mid(6);
+        } else if (line.startsWith("DateTime: ")) {
+            block.dateTime = QDateTime::fromString(line.mid(10));
+        } else if (line.startsWith("DateString: ")) {
+            block.dateString = line.mid(13);
+        } else if (line.startsWith("-----")) {
+            messageBlocks.append(block);
+            block = MessageBlock();
+        }
+    }
+
+    file.close();
+    return messageBlocks;
+}
+
+bool storeMessageBlocks_user(const QVector<MessageBlock>& messageBlocks,QString dst)
+{
+    QString path = get_login_inf_Path();
+    path.append(dst);
+    path.append("_chat_user.txt");
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    file.resize(0);
+    QTextStream out(&file);
+    for (const MessageBlock& block : messageBlocks) {
+        out << "Source: " << block.src << "\n";
+        out << "Destination: " << block.dst << "\n";
+        out << "Body: " << block.body << "\n";
+        out << "DateTime: " << block.dateTime.toString() << "\n";
+        out << "DateString: " << block.dateString << "\n";
+        out << "-----\n";
+    }
+
+    file.close();
+    return true;
+}
+
+
+bool storeMessageBlocks_group(const QVector<MessageBlock>& messageBlocks,QString dst)
+{
+    QString path = get_login_inf_Path();
+    path.append(dst);
+    path.append("_chat_group.txt");
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    file.resize(0);
+    QTextStream out(&file);
+    for (const MessageBlock& block : messageBlocks) {
+        out << "Source: " << block.src << "\n";
+        out << "Destination: " << block.dst << "\n";
+        out << "Body: " << block.body << "\n";
+        out << "DateTime: " << block.dateTime.toString() << "\n";
+        out << "DateString: " << block.dateString << "\n";
+        out << "-----\n";
+    }
+
+    file.close();
+    return true;
+}
+bool storeMessageBlocks_channel(const QVector<MessageBlock>& messageBlocks,QString dst)
+{
+    QString path = get_login_inf_Path();
+    path.append(dst);
+    path.append("_chat_channel.txt");
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    file.resize(0);
+    QTextStream out(&file);
+    for (const MessageBlock& block : messageBlocks) {
+        out << "Source: " << block.src << "\n";
+        out << "Destination: " << block.dst << "\n";
+        out << "Body: " << block.body << "\n";
+        out << "DateTime: " << block.dateTime.toString() << "\n";
+        out << "DateString: " << block.dateString << "\n";
+        out << "-----\n";
+    }
+
+    file.close();
+    return true;
+}
+
 
 //-----------------------------------------------------------------------
 bool removeDir(const QString dirName = get_Desktop_Path())
@@ -93,56 +444,6 @@ bool removeDir(const QString dirName = get_Desktop_Path())
     return result;
 }
 
-bool if_is_not_logged_in( const QString& username, const QString& password, const QString& token)
-{
-    QString path = get_login_inf_Path();
-    path.append("login_info.txt/");
-    QFile file(path);
-    if (!file.exists()) {
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            return false; // Failed to create or open the file
-        }
-        file.close();
-    }
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        return false; // Failed to open the file
-    }
-
-    QTextStream out(&file);
-    out << "Username: " << username << "\n";
-    out << "Password: " << password << "\n";
-    out << "Token: " << token << "\n";
-
-    file.close();
-    return true;
-}
-
-bool is_it_loged_in( QString& username, QString& password, QString& token)
-{
-    QString path = get_Desktop_Path();
-    path.append("user_info/login_info.txt/");
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return false; // Failed to open the file
-    }
-
-    QTextStream in(&file);
-    QString line;
-    while (!in.atEnd()) {
-        line = in.readLine();
-        if (line.startsWith("Username: ")) {
-            username = line.mid(10); // Extract the username value
-        } else if (line.startsWith("Password: ")) {
-            password = line.mid(10); // Extract the password value
-        } else if (line.startsWith("Token: ")) {
-            token = line.mid(8); // Extract the token value
-        }
-    }
-
-    file.close();
-    return true;
-}
 //-------------------------------------------------------------------------------------------------------------------------------
 
 bool fileExists(QString path) {
@@ -157,13 +458,6 @@ bool fileExists(QString path) {
 QString saveFileToDesktop(const QString& base64Data, const QString& format,QString name);
 QString decodeString(const QString& encodedString);
 
-struct MessageBlock {
-    QString src;
-    QString dst;
-    QString body;
-    QDateTime dateTime; // Updated to use QDateTime for date and time
-    QString dateString; // Added QString member for date
-};
 
 QString response_code(QString Server_Response){
     //seperating the code out of the respose of the server
@@ -1294,7 +1588,6 @@ QString saveFileToDesktop(const QString& base64Data, const QString& format, QStr
     }
 }
 
-
 QString encodeString(const QString& originalString) {
     QString encodedString = QUrl::toPercentEncoding(originalString);
     return encodedString;
@@ -1453,14 +1746,21 @@ bool Chatpage::sticker(QString body) {
         ui->listWidget->setItemWidget(iconItem, iconLabel);
         return true;
     }
-
     return false;
 }
 
 // show users chat
 void Chatpage::show_users_chat(QString user)
 {
-    QVector<MessageBlock> chats = getuserchats_server_to_chat_display(UserToken,user);
+    QVector<MessageBlock> chats;
+    if(checkInternetConnection()){
+      chats = getuserchats_server_to_chat_display(UserToken,user);
+    }
+
+    else{
+        QVector<MessageBlock> chats = readMessageBlocks_user(user);
+    }
+
     ui->listWidget->clear();
     for (int i = 0 ; i < chats.size(); i++) {
         // user name
@@ -1552,7 +1852,14 @@ void Chatpage::show_users_chat(QString user)
 
 // show groups chats
 void Chatpage::show_groups_chats(QString name){
-    QVector<MessageBlock> chats = getgroupchats_server_to_chat_display(UserToken,name);
+    QVector<MessageBlock> chats;
+    if(checkInternetConnection()){
+        chats = getgroupchats_server_to_chat_display(UserToken,name);
+    }
+
+    else{
+        QVector<MessageBlock> chats = readMessageBlocks_group(name);
+    }
     ui->listWidget->clear();
     for (int i = 0 ; i < chats.size(); i++) {
         // user name
@@ -1643,7 +1950,14 @@ void Chatpage::show_groups_chats(QString name){
 
 // show Channel chats
 void Chatpage::show_channel_chats(QString name){
-    QVector<MessageBlock> chats = getchannelchats_server_to_chat_display(UserToken,name);
+    QVector<MessageBlock> chats;
+    if(checkInternetConnection()){
+        chats = getchannelchats_server_to_chat_display(UserToken,name);
+    }
+
+    else{
+        QVector<MessageBlock> chats = readMessageBlocks_channel(name);
+    }
     ui->listWidget->clear();
     for (int i = 0 ; i < chats.size(); i++) {
         QString text = chats.at(i).body;
@@ -1720,9 +2034,9 @@ void Chatpage::on_pushButton_2_clicked() {
 // Quit Button
 void Chatpage::on_pushButton_clicked()
 {
-    while(logout(CurrentUsername,CurrentPassword)!="200"){
-        ;
-    };
+//    while(logout(CurrentUsername,CurrentPassword)!="200"){
+//        ;
+//    };
     QCoreApplication::quit();
 }
 
@@ -1779,20 +2093,20 @@ void Chatpage::on_pushButton_3_clicked()
 // logout
 void Chatpage::on_pushButton_8_clicked()
 {
-    LogOut *out = new LogOut(this);
-    out->show();
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Log out", "Are you sure you want to exit?", QMessageBox::Yes | QMessageBox::No);
+    if(reply == QMessageBox::Yes){
+        removeDir();
+        logout(CurrentUsername,CurrentPassword);
+        QCoreApplication::quit();
+    }
+
+    else{
+        return;
+    }
 }
+
 //////remember------------------------------------------------------------
 
-//void Chatpage::on_pushButton_4_clicked()
-//{
-//    QString dst = ui->label_2->text();
-//    function();
-//    QApplication::processEvents();
-
-//    // Show the chat page again
-//    show();
-//}
 void Chatpage::on_pushButton_4_clicked()
 {
 
@@ -1839,33 +2153,63 @@ void Chatpage::on_pushButton_5_clicked()
 {
     if(pic_user_display_count >= 0){
     if(sending_file_count==1){
-    int currentindex =  ui->tabWidget->currentIndex();
 
+    QVector<QString> groupList , updatedUsers , channelList;
+    int currentindex =  ui->tabWidget->currentIndex();
+    if(checkInternetConnection()){
+
+        updatedUsers = getuserlist(UserToken);
+        store_user_list_ofline(updatedUsers);
+
+        groupList = getgrouplist(UserToken);
+        store_group_list_ofline(groupList);
+
+        channelList = getchannellist(UserToken);
+        store_channel_list_ofline(channelList);
+    }
+
+
+    else{
+        updatedUsers = get_user_list_ofline();
+
+        groupList = get_group_list_ofline();
+
+        channelList = get_channel_list_ofline();
+    }
 
     if(currentindex == 0){
-        QVector<QString> updatedUsers = getuserlist(UserToken);
             ui->listWidget_2->clear();
             for (int i = updatedUsers.size() - 1; i >= 0; --i) {
                 ui->listWidget_2->addItem(updatedUsers[i]);
             }
+
+                for (int i = updatedUsers.size() - 1; i >= 0; --i) {
+                    storeMessageBlocks_user(getuserchats_server_to_chat_display(UserToken,updatedUsers[i]),updatedUsers[i]);
+            }
+
             show_users_chat(ui->label_2->text());
         }
 
         else if(currentindex == 1){
-            QVector<QString> groupList = getgrouplist(UserToken);
             ui->listWidget_4->clear();
             for(int i = groupList.size() -1 ; i >= 0; --i){
                 ui->listWidget_4->addItem(groupList[i]);
+            }
+
+            for(int i = groupList.size() -1 ; i >= 0; --i){
+                storeMessageBlocks_group(getgroupchats_server_to_chat_display(UserToken,groupList[i]),groupList[i]);
             }
             show_groups_chats(ui->label_2->text());
         }
 
         else if(currentindex == 2){
-            QVector<QString> channelList = getchannellist(UserToken);
             ui->listWidget_3->clear();
             for(int i = channelList.size() -1 ; i >= 0 ; --i){
                 ui->listWidget_3->addItem(channelList[i]);
             }
+                for(int i = channelList.size() -1 ; i >= 0 ; --i){
+                    storeMessageBlocks_channel(getchannelchats_server_to_chat_display(UserToken,channelList[i]),channelList[i]);
+                }
             show_channel_chats(ui->label_2->text());
         }
     }

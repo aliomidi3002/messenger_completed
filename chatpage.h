@@ -8,6 +8,8 @@
 #include <QKeyEvent>
 #include <QListWidget>
 
+struct MessageBlock;
+
 namespace Ui {
 class Chatpage;
 }

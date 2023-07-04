@@ -13,7 +13,6 @@ CONFIG += c++17
 SOURCES += \
     chatpage.cpp \
     login.cpp \
-    logout.cpp \
     main.cpp \
     mainwindow.cpp \
     signup.cpp
@@ -22,15 +21,12 @@ HEADERS += \
     ID.h \
     chatpage.h \
     login.h \
-    logout.h \
     mainwindow.h \
-    signup.h \
-    text_chat.h
+    signup.h
 
 FORMS += \
     chatpage.ui \
     login.ui \
-    logout.ui \
     mainwindow.ui \
     signup.ui
 

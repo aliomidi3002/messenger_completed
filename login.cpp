@@ -6,7 +6,58 @@
 #include "ID.h"
 #include <QtNetwork>
 #include "chatpage.h"
+#include <QDebug>
 
+QString get_login_inf_Path()
+{
+    QStringList desktopLocations = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
+    if (!desktopLocations.isEmpty())
+    {
+        QString desktopPath = desktopLocations.first();
+        if (!desktopPath.endsWith('/'))
+        {
+            desktopPath.append('/');
+        }
+        desktopPath.append("AP_project");
+        desktopPath.append('/');
+        desktopPath.append("user_info/");
+        if(QDir(desktopPath).exists())
+            return desktopPath;
+        else {
+            QDir().mkdir(desktopPath);
+            return desktopPath;
+        }
+    }
+
+    return QString(); // Return an empty string if the desktop path cannot be determined
+}
+
+bool if_is_not_logged_in( const QString& username, const QString& password, const QString& token)
+{
+    QString path = get_login_inf_Path();
+    path.append("login_info.txt");
+    QFile file(path);
+    if (!file.exists()) {
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            qDebug() << "file created";
+            return false; // Failed to create or open the file
+
+        }
+        file.close();
+    }
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false; // Failed to open the file
+    }
+
+    QTextStream out(&file);
+    out << "Username: " << username << "\n";
+    out << "Password: " << password << "\n";
+    out << "Token: " << token << "\n";
+
+    file.close();
+    return true;
+}
 
 QString response_code(QString Server_Response);
 
@@ -128,8 +179,6 @@ void Login::on_pushButton_clicked()
     userID currentUser = userID(Username , Password);
 
 
-
-
     if(respons_login == "404"){
         ui->label_4->setText("Connection lost! :(");
         return;
@@ -152,6 +201,7 @@ void Login::on_pushButton_clicked()
     }
     else if(respons_login != "200"){
         currentUser.setToken(respons_login);
+        if_is_not_logged_in(Username , Password , respons_login);
         hide();
         ChatPage = new Chatpage(this, currentUser);
         ChatPage->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::Window | Qt::FramelessWindowHint);

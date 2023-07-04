@@ -4,6 +4,7 @@
 #include <QUrlQuery>
 #include <QtNetwork>
 #include "mainwindow.h"
+bool removeDir(const QString dirName);
 QString logout(QString user,QString pass);
 QString response_code(QString Server_Response);
 QString logout(QString user,QString pass) {
@@ -98,6 +99,9 @@ void LogOut::on_pushButton_2_clicked()
 
     if (replay == QMessageBox::Yes){
         hide();
+        QString user = ui->lineEdit->text();
+        QString pass = ui->lineEdit_2->text();
+        logout(user,pass);
         MainWindow * main;
         main = new MainWindow(this);
         main->show();
