@@ -22,27 +22,34 @@
 #include <QDateTime>
 #include <QDir>
 #include <QMessageBox>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <QEventLoop>
 
+bool functionRunning = false;
 
 bool checkInternetConnection()
 {
     QNetworkAccessManager manager;
-    QNetworkRequest request(QUrl("http://www.google.com"));
-    QNetworkReply *reply = manager.get(request);
+    QNetworkRequest request;
+    request.setUrl(QUrl("http://api.barafardayebehtar.ml:8080/signup?username=sara&password=1234"));
 
-    QEventLoop eventLoop;
-    QObject::connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
-    eventLoop.exec();
+    QNetworkReply* reply = manager.get(request);
+    QEventLoop loop;
+    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
 
     bool isConnected = false;
-    if (reply->error() == QNetworkReply::NoError) {
+
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        // Server is responding
         isConnected = true;
     }
 
     reply->deleteLater();
     return isConnected;
 }
-
 
 int sending_file_count = 1;
 
@@ -53,7 +60,7 @@ struct MessageBlock {
     QDateTime dateTime; // Updated to use QDateTime for date and time
     QString dateString; // Added QString member for date
 };
-
+QVector<QString> groupList , updatedUsers , channelList;
 QString response_code(QString Server_Response);
 
 QString logout(QString user,QString pass) {
@@ -125,7 +132,9 @@ QString get_Desktop_Path()
 QString get_login_inf_Path();
 
 bool store_user_list_ofline( const QVector<QString>& strings)
-{
+{    if(strings.size()<1){
+        return false;
+    }
     QString path = get_login_inf_Path();
     path.append("user_list.txt");
     QFile file(path);
@@ -143,7 +152,9 @@ bool store_user_list_ofline( const QVector<QString>& strings)
 }
 
 bool store_group_list_ofline( const QVector<QString>& strings)
-{
+{    if(strings.size()<1){
+        return false;
+    }
     QString path = get_login_inf_Path();
     path.append("group_list.txt");
     QFile file(path);
@@ -162,6 +173,9 @@ bool store_group_list_ofline( const QVector<QString>& strings)
 
 bool store_channel_list_ofline( const QVector<QString>& strings)
 {
+    if(strings.size()<1){
+        return false;
+    }
     QString path = get_login_inf_Path();
     path.append("channel_list.txt");
     QFile file(path);
@@ -251,22 +265,35 @@ QVector<MessageBlock> readMessageBlocks_user(QString dst)
     }
 
     QTextStream in(&file);
-    MessageBlock block;
-    while (!in.atEnd()) {
-        QString line = in.readLine();
-        if (line.startsWith("Source: ")) {
-            block.src = line.mid(8);
-        } else if (line.startsWith("Destination: ")) {
-            block.dst = line.mid(13);
-        } else if (line.startsWith("Body: ")) {
-            block.body = line.mid(6);
-        } else if (line.startsWith("DateTime: ")) {
-            block.dateTime = QDateTime::fromString(line.mid(10));
-        } else if (line.startsWith("DateString: ")) {
-            block.dateString = line.mid(13);
-        } else if (line.startsWith("-----")) {
-            messageBlocks.append(block);
-            block = MessageBlock();
+    MessageBlock currentBlock;
+    QString line;
+    while (!in.atEnd())
+    {
+        line = in.readLine();
+        if (line.startsWith("Source: "))
+        {
+            currentBlock.src = line.mid(8);
+        }
+        else if (line.startsWith("Destination: "))
+        {
+            currentBlock.dst = line.mid(13);
+        }
+        else if (line.startsWith("Body: "))
+        {
+            currentBlock.body = line.mid(6);
+        }
+        else if (line.startsWith("DateTime: "))
+        {
+            currentBlock.dateTime = QDateTime::fromString(line.mid(11));
+        }
+        else if (line.startsWith("DateString: "))
+        {
+            currentBlock.dateString = line.mid(13);
+        }
+        else if (line == "-----")
+        {
+            messageBlocks.append(currentBlock);
+            currentBlock = MessageBlock();
         }
     }
 
@@ -343,18 +370,28 @@ QVector<MessageBlock> readMessageBlocks_channel(QString dst)
     file.close();
     return messageBlocks;
 }
-
+bool clearTextFile(const QString& filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        return false; // Failed to open the file
+    file.close();
+    return true;
+}
 bool storeMessageBlocks_user(const QVector<MessageBlock>& messageBlocks,QString dst)
 {
+    if(messageBlocks.size()<1){
+        return false;
+    }
     QString path = get_login_inf_Path();
     path.append(dst);
     path.append("_chat_user.txt");
+
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return false; // Failed to open the file
     }
 
-    file.resize(0);
     QTextStream out(&file);
     for (const MessageBlock& block : messageBlocks) {
         out << "Source: " << block.src << "\n";
@@ -372,15 +409,18 @@ bool storeMessageBlocks_user(const QVector<MessageBlock>& messageBlocks,QString 
 
 bool storeMessageBlocks_group(const QVector<MessageBlock>& messageBlocks,QString dst)
 {
+    if(messageBlocks.size()<1){
+        return false;
+    }
     QString path = get_login_inf_Path();
     path.append(dst);
     path.append("_chat_group.txt");
+
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return false; // Failed to open the file
     }
 
-    file.resize(0);
     QTextStream out(&file);
     for (const MessageBlock& block : messageBlocks) {
         out << "Source: " << block.src << "\n";
@@ -396,15 +436,18 @@ bool storeMessageBlocks_group(const QVector<MessageBlock>& messageBlocks,QString
 }
 bool storeMessageBlocks_channel(const QVector<MessageBlock>& messageBlocks,QString dst)
 {
+    if(messageBlocks.size()<1){
+        return false;
+    }
     QString path = get_login_inf_Path();
     path.append(dst);
     path.append("_chat_channel.txt");
+
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         return false; // Failed to open the file
     }
 
-    file.resize(0);
     QTextStream out(&file);
     for (const MessageBlock& block : messageBlocks) {
         out << "Source: " << block.src << "\n";
@@ -1641,8 +1684,8 @@ Chatpage::~Chatpage()
 void Chatpage::on_toolButton_5_clicked()
 {
     QString username = ui->lineEdit->text();
-    ui->lineEdit->clear();
     sendmessageuser_chat_to_server(UserToken, username, "hi");
+    ui->lineEdit->clear();
 }
 
 // create group
@@ -1758,7 +1801,16 @@ void Chatpage::show_users_chat(QString user)
     }
 
     else{
-        QVector<MessageBlock> chats = readMessageBlocks_user(user);
+       chats = readMessageBlocks_user(user);
+      for (const MessageBlock& block : chats)
+      {
+            qDebug() << "Source:" << block.src;
+            qDebug() << "Destination:" << block.dst;
+            qDebug() << "Body:" << block.body;
+            qDebug() << "DateTime:" << block.dateTime.toString();
+            qDebug() << "DateString:" << block.dateString;
+            qDebug() << "-----";
+      }
     }
 
     ui->listWidget->clear();
@@ -1858,7 +1910,7 @@ void Chatpage::show_groups_chats(QString name){
     }
 
     else{
-        QVector<MessageBlock> chats = readMessageBlocks_group(name);
+        chats = readMessageBlocks_group(name);
     }
     ui->listWidget->clear();
     for (int i = 0 ; i < chats.size(); i++) {
@@ -1956,7 +2008,7 @@ void Chatpage::show_channel_chats(QString name){
     }
 
     else{
-        QVector<MessageBlock> chats = readMessageBlocks_channel(name);
+        chats = readMessageBlocks_channel(name);
     }
     ui->listWidget->clear();
     for (int i = 0 ; i < chats.size(); i++) {
@@ -2034,9 +2086,18 @@ void Chatpage::on_pushButton_2_clicked() {
 // Quit Button
 void Chatpage::on_pushButton_clicked()
 {
-//    while(logout(CurrentUsername,CurrentPassword)!="200"){
-//        ;
-//    };
+    for (int i = updatedUsers.size() - 1; i >= 0; --i)
+
+        storeMessageBlocks_user(getuserchats_server_to_chat_display(UserToken,updatedUsers[i]),updatedUsers[i]);
+
+    for(int i = groupList.size() -1 ; i >= 0; --i)
+
+        storeMessageBlocks_group(getgroupchats_server_to_chat_display(UserToken,groupList[i]),groupList[i]);
+
+    for(int i = channelList.size() -1 ; i >= 0 ; --i)
+
+        storeMessageBlocks_channel(getchannelchats_server_to_chat_display(UserToken,channelList[i]),channelList[i]);
+
     QCoreApplication::quit();
 }
 
@@ -2148,16 +2209,39 @@ void Chatpage::on_pushButton_4_clicked()
     //qDebug()<<final_path;
 
 }
+bool areVectorsEqual(const QVector<MessageBlock>& vector1, const QVector<MessageBlock>& vector2)
+{
+    if (vector1.size() != vector2.size())
+    return false;
 
+    for (int i = 0; i < vector1.size(); ++i)
+    {
+    const MessageBlock& block1 = vector1.at(i);
+    const MessageBlock& block2 = vector2.at(i);
+
+    if (block1.src != block2.src ||
+        block1.dst != block2.dst ||
+        block1.body != block2.body ||
+        block1.dateTime != block2.dateTime ||
+        block1.dateString != block2.dateString)
+    {
+        return false;
+    }
+    }
+
+    return true;
+}
 void Chatpage::on_pushButton_5_clicked()
 {
     if(pic_user_display_count >= 0){
     if(sending_file_count==1){
+        QString tmp = ui->label_2->text();
+        QVector<MessageBlock> tmp1,tmp2;
+        int connection = 0;
 
-    QVector<QString> groupList , updatedUsers , channelList;
     int currentindex =  ui->tabWidget->currentIndex();
     if(checkInternetConnection()){
-
+                qDebug()<<UserToken<<"1";
         updatedUsers = getuserlist(UserToken);
         store_user_list_ofline(updatedUsers);
 
@@ -2166,51 +2250,93 @@ void Chatpage::on_pushButton_5_clicked()
 
         channelList = getchannellist(UserToken);
         store_channel_list_ofline(channelList);
+        connection = 1;
     }
 
 
     else{
+        qDebug()<<UserToken<<"2";
         updatedUsers = get_user_list_ofline();
 
         groupList = get_group_list_ofline();
 
         channelList = get_channel_list_ofline();
+        connection = 0;
     }
 
     if(currentindex == 0){
+        functionRunning = true;
             ui->listWidget_2->clear();
             for (int i = updatedUsers.size() - 1; i >= 0; --i) {
                 ui->listWidget_2->addItem(updatedUsers[i]);
             }
-
+            if(connection == 1){
                 for (int i = updatedUsers.size() - 1; i >= 0; --i) {
+                        tmp1.clear();
+                        tmp2.clear();
+                        tmp1 = getuserchats_server_to_chat_display(UserToken,tmp);
+                        tmp2 =  readMessageBlocks_user(tmp);
+                        if(areVectorsEqual(tmp2,tmp1) == false)
                     storeMessageBlocks_user(getuserchats_server_to_chat_display(UserToken,updatedUsers[i]),updatedUsers[i]);
             }
-
+    }
+            tmp1.clear();
+            tmp2.clear();
+            tmp1 = getuserchats_server_to_chat_display(UserToken,tmp);
+            tmp2 =  readMessageBlocks_user(tmp);
+            if(areVectorsEqual(tmp2,tmp1) == false)
             show_users_chat(ui->label_2->text());
+            functionRunning = false;
         }
 
         else if(currentindex == 1){
+            functionRunning = true;
             ui->listWidget_4->clear();
             for(int i = groupList.size() -1 ; i >= 0; --i){
                 ui->listWidget_4->addItem(groupList[i]);
             }
-
+            if(connection == 1){
             for(int i = groupList.size() -1 ; i >= 0; --i){
+                    tmp1.clear();
+                    tmp2.clear();
+                    tmp1 = getgroupchats_server_to_chat_display(UserToken,tmp);
+                    tmp2 =  readMessageBlocks_group(tmp);
+                    if(areVectorsEqual(tmp2,tmp1) == false)
                 storeMessageBlocks_group(getgroupchats_server_to_chat_display(UserToken,groupList[i]),groupList[i]);
             }
+            }
+            tmp1.clear();
+            tmp2.clear();
+            tmp1 = getgroupchats_server_to_chat_display(UserToken,tmp);
+            tmp2 =  readMessageBlocks_group(tmp);
+            if(areVectorsEqual(tmp2,tmp1) == false)
             show_groups_chats(ui->label_2->text());
+            functionRunning = false;
         }
 
         else if(currentindex == 2){
+            functionRunning = true;
             ui->listWidget_3->clear();
             for(int i = channelList.size() -1 ; i >= 0 ; --i){
                 ui->listWidget_3->addItem(channelList[i]);
             }
+            if(connection == 1){
                 for(int i = channelList.size() -1 ; i >= 0 ; --i){
-                    storeMessageBlocks_channel(getchannelchats_server_to_chat_display(UserToken,channelList[i]),channelList[i]);
+                tmp1.clear();
+                tmp2.clear();
+                tmp1 = getchannelchats_server_to_chat_display(UserToken,tmp);
+                tmp2 =  readMessageBlocks_channel(tmp);
+                if(areVectorsEqual(tmp2,tmp1) == false)
+                  storeMessageBlocks_channel(getchannelchats_server_to_chat_display(UserToken,channelList[i]),channelList[i]);
                 }
+            }
+            tmp1.clear();
+            tmp2.clear();
+            tmp1 = getchannelchats_server_to_chat_display(UserToken,tmp);
+            tmp2 =  readMessageBlocks_channel(tmp);
+            if(areVectorsEqual(tmp2,tmp1) == false)
             show_channel_chats(ui->label_2->text());
+            functionRunning = false;
         }
     }
     }
@@ -2367,4 +2493,10 @@ void Chatpage::on_listWidget_5_itemClicked(QListWidgetItem *item)
     }
 }
 
+
+
+void Chatpage::on_toolButton_5_triggered(QAction *arg1)
+{
+
+}
 

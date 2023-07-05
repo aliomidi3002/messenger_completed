@@ -46,6 +46,8 @@ private slots:
     void on_listWidget_5_itemClicked(QListWidgetItem *item);
     bool sticker(QString body);
 
+    void on_toolButton_5_triggered(QAction *arg1);
+
 private:
     Ui::Chatpage *ui;
     userID mCurrentUser;
